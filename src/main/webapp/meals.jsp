@@ -13,6 +13,7 @@
         <th>Id</th>
         <th>DateTime</th>
         <th>Description</th>
+        <th>Calories</th>
         <th colspan=2>Action</th>
     </tr>
 
@@ -27,6 +28,7 @@
             <td><c:out value="${meal.id}"/></td>
             <td><c:out value="${meal.dateTime}"/></td>
             <td><c:out value="${meal.description}"/></td>
+            <td><c:out value="${meal.calories}"/></td>
             <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Update</a></td>
             <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
         </tr>

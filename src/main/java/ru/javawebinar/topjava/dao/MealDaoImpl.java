@@ -52,6 +52,10 @@ public class MealDaoImpl implements MealDao {
 
     @Override
     public void update(int userId, Meal meal) {
+        map
+                .computeIfAbsent(userId, integer -> new ConcurrentHashMap<>())
+                .put(meal.getId(), meal);
+
     }
 
     @Override
