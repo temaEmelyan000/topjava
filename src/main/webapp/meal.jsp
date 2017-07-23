@@ -6,17 +6,28 @@
     <title>Title</title>
 </head>
 <body>
-
-
-<%--<jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>--%>
-
-
 <form action="${pageContext.request.contextPath}/meals" method="post">
     <input type="hidden" name="id" value="${meal.id}">
-    dateTime <input type="datetime-local" name="dateTime" value="${meal.dateTime}"><br>
-    Description <input name="description" value="${meal.description}"><br>
-    Calories <input type="number" name="calories" value="${meal.calories}"><br>
-    <input type="submit" value="Submit">
+    <table>
+        <tbody>
+        <tr>
+            <td>Date time</td>
+            <td><input type="datetime-local" name="dateTime" value="${meal.dateTime}"></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td><input name="description" value="${meal.description}">
+            </td>
+        </tr>
+        <tr>
+            <td>Calories</td>
+            <td><input type="number" name="calories" value="${meal.calories}"></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Submit"></td>
+        </tr>
+        </tbody>
+    </table>
 </form>
 
 </body>
