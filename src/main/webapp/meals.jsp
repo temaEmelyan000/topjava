@@ -21,6 +21,43 @@
     <h2>Meal list</h2>
     <a href="meals?action=create">Add Meal</a>
     <hr/>
+
+    <form method="post" action="meals?action=filter" id="filterForm">
+        <table>
+            <tr>
+                <td>
+                    <label for="startDate">From Date</label>
+                </td>
+                <td>
+                    <input type="date" id="startDate" name="startDate" value="${startDate}">
+                </td>
+                <td>
+                    <label for="startTime">From Time</label>
+                </td>
+                <td>
+                    <input type="time" id="startTime" name="startTime" value="${startTime}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="endDate">To Date</label>
+                </td>
+                <td>
+                    <input type="date" id="endDate" name="endDate" value="${endDate}">
+                </td>
+                <td>
+                    <label for="endTime">To Time</label>
+                </td>
+                <td>
+                    <input type="time" id="endTime" name="endTime" value="${endTime}">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <button id="submitButton>" value="submit" onclick="submit()">Submit</button>
+    <button id="resetButton>" value="reset" onclick="reset()">Reset</button>
+    <br>
+    <br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
@@ -32,7 +69,7 @@
         </tr>
         </thead>
         <c:forEach items="${meals}" var="meal">
-            <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.model.MealWithExceed"/>
+            <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealWithExceed"/>
             <tr class="${meal.exceed ? 'exceeded' : 'normal'}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
@@ -47,5 +84,19 @@
         </c:forEach>
     </table>
 </section>
+
+<script>
+    function submit() {
+        var elementById = document.getElementById("filterForm");
+        elementById.submit();
+    }
+
+    function reset() {
+        var elementById = document.getElementById("filterForm");
+        elementById.reset();
+        window.location = (location.protocol + '//' + location.host + location.pathname);
+    }
+</script>
+
 </body>
 </html>
