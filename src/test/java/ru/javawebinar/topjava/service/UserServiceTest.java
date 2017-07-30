@@ -10,6 +10,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.springConfig.SpringAppConfig;
+import ru.javawebinar.topjava.springConfig.SpringDBConfig;
+import ru.javawebinar.topjava.springConfig.SpringTestConfig;
 import ru.javawebinar.topjava.util.DbPopulator;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -19,10 +22,7 @@ import java.util.Collections;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
-})
+@ContextConfiguration(classes = {SpringAppConfig.class, SpringDBConfig.class})
 @RunWith(SpringRunner.class)
 public class UserServiceTest {
 
