@@ -10,17 +10,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepositoryImpl.class);
 
+    private static AtomicInteger id = new AtomicInteger(-1);
+
     static private Map<Integer, User> userMap = new ConcurrentHashMap<>();
 
     @Override
     public User save(User user) {
         log.info("save {}", user);
+        if (user.isNew()) {
+            user.setId(id.incrementAndGet());
+        }
         return userMap.put(user.getId(), user);
     }
 
