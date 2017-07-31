@@ -14,7 +14,6 @@ import ru.javawebinar.topjava.util.DbPopulator;
 @PropertySource("classpath:db/postgres.properties")
 @ComponentScan("ru.**.jdbc")
 public class SpringDBConfig {
-
     private @Value("${database.url}")
     String url;
     private @Value("${database.username}")
@@ -45,6 +44,6 @@ public class SpringDBConfig {
 
     @Bean
     public DbPopulator dbPopulator() {
-        return new DbPopulator("classpath:db/populateDB.sql", DataSource());
+        return new DbPopulator(DataSource(), "classpath:db/initDB.sql", "classpath:db/populateDB.sql");
     }
 }
