@@ -29,4 +29,8 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
     List<User> findAll(Sort sort);
 
     User getByEmail(String email);
+
+    //http://stackoverflow.com/questions/15359306/how-to-load-lazy-fetched-items-from-hibernate-jpa-in-my-controller
+    @Query("SELECT u FROM User u JOIN FETCH u.meals WHERE u.id = (:id)")
+    User findByIdAndFetchMealsEagerly(@Param("id") int id);
 }

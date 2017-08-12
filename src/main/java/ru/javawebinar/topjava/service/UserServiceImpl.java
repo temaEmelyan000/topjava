@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
@@ -65,5 +66,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void evictCache() {
         // only for evict cache
+    }
+
+    @Override
+    public User getWithMeals(int id) throws OperationNotSupportedException {
+        return repository.getWithMeals(id);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
+import javax.naming.OperationNotSupportedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,5 +53,10 @@ public class MealServiceImpl implements MealService {
     public Meal create(Meal meal, int userId) {
         Assert.notNull(meal, "meal must not be null");
         return repository.save(meal, userId);
+    }
+
+    @Override
+    public Meal getWithUser(int id) throws OperationNotSupportedException {
+        return repository.getWithUser(id);
     }
 }

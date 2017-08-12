@@ -4,6 +4,7 @@ package ru.javawebinar.topjava.service;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.List;
 
 public interface UserService {
@@ -21,4 +22,6 @@ public interface UserService {
     void evictCache();
 
     List<User> getAll();
+
+    User getWithMeals(int id) throws OperationNotSupportedException;
 }

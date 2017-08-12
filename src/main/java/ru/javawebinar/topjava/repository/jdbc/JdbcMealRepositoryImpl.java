@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,25 +10,22 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
-public class JdbcMealRepositoryImpl implements MealRepository {
+public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
-
     private final JdbcTemplate jdbcTemplate;
-
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
     private final SimpleJdbcInsert insertMeal;
 
-    @Autowired
     public JdbcMealRepositoryImpl(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(dataSource)
                 .withTableName("meals")
@@ -43,7 +41,7 @@ public class JdbcMealRepositoryImpl implements MealRepository {
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
-                .addValue("date_time", meal.getDateTime())
+                .addValue("date_time", getSuitableDateTime(meal.getDateTime()))
                 .addValue("user_id", userId);
 
         if (meal.isNew()) {
@@ -59,6 +57,13 @@ public class JdbcMealRepositoryImpl implements MealRepository {
             }
         }
         return meal;
+    }
+
+    @Override
+    public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
+        return jdbcTemplate.query(
+                "SELECT * FROM meals WHERE user_id=?  AND date_time BETWEEN  ? AND ? ORDER BY date_time DESC",
+                ROW_MAPPER, userId, getSuitableDateTime(startDate), getSuitableDateTime(endDate));
     }
 
     @Override
@@ -79,10 +84,35 @@ public class JdbcMealRepositoryImpl implements MealRepository {
                 "SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
     }
 
-    @Override
-    public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return jdbcTemplate.query(
-                "SELECT * FROM meals WHERE user_id=?  AND date_time BETWEEN  ? AND ? ORDER BY date_time DESC",
-                ROW_MAPPER, userId, startDate, endDate);
+    abstract T getSuitableDateTime(LocalDateTime dateTime);
+
+    @Repository
+    @Profile(Profiles.POSTGRES_DB)
+    public static class JdbcMealRepositoryImplPostgres extends JdbcMealRepositoryImpl<LocalDateTime> {
+
+        @Autowired
+        public JdbcMealRepositoryImplPostgres(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+            super(dataSource, jdbcTemplate, namedParameterJdbcTemplate);
+        }
+
+        @Override
+        LocalDateTime getSuitableDateTime(LocalDateTime dateTime) {
+            return dateTime;
+        }
+    }
+
+    @Repository
+    @Profile(Profiles.HSQL_DB)
+    public static class JdbcMealRepositoryImplHsql extends JdbcMealRepositoryImpl<String> {
+
+        @Autowired
+        public JdbcMealRepositoryImplHsql(DataSource dataSource, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+            super(dataSource, jdbcTemplate, namedParameterJdbcTemplate);
+        }
+
+        @Override
+        String getSuitableDateTime(LocalDateTime dateTime) {
+            return String.valueOf(Timestamp.valueOf(dateTime));
+        }
     }
 }
