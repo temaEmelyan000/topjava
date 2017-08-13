@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.MyProfile;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
@@ -87,7 +87,7 @@ public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
     abstract T getSuitableDateTime(LocalDateTime dateTime);
 
     @Repository
-    @Profile(Profiles.POSTGRES_DB)
+    @MyProfile({Profiles.POSTGRES_DB, Profiles.JDBC})
     public static class JdbcMealRepositoryImplPostgres extends JdbcMealRepositoryImpl<LocalDateTime> {
 
         @Autowired
@@ -102,7 +102,7 @@ public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
     }
 
     @Repository
-    @Profile(Profiles.HSQL_DB)
+    @MyProfile({Profiles.HSQL_DB, Profiles.JDBC})
     public static class JdbcMealRepositoryImplHsql extends JdbcMealRepositoryImpl<String> {
 
         @Autowired
